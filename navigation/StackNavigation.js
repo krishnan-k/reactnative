@@ -5,12 +5,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import RegisterScreen from '../screen/RegisterScreen';
 
 const StackNavigation = () => {
-    const stack = createNativeStackNavigator();
+    const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-        <stack.Navigator>
-            <stack.Screen name='Register' component={RegisterScreen}/>
-        </stack.Navigator>
+        <Stack.Navigator>
+            <Stack.Screen name='Register' component={RegisterScreen} options={{ headerShown: true }} />
+        </Stack.Navigator>
     </NavigationContainer>
   )
 }
