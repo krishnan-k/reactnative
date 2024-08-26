@@ -1,4 +1,4 @@
-  import { useState } from "react";
+import { useState } from "react";
 
 import {
   Alert,
@@ -13,13 +13,13 @@ import {
 } from "react-native";
 import Carousel from "./component/Carousel";
 import StackNavigation from "./navigation/StackNavigation";
-
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 const imageIcon = require("./assets/logo.png");
 const greenCard = require("./assets/greencard.png");
 export default function App() {
-  const [isVisible, setVisible] = useState(false);
+  //const [isVisible, setVisible] = useState(false);
   return (
-    // <View style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
+    //<View style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
     //   <StatusBar backgroundColor="#00b0b5" barStyle="light-content"></StatusBar>
     //   <Image source={imageIcon} alt="logo" />
     //   <ScrollView>
@@ -89,13 +89,31 @@ export default function App() {
     //   </ScrollView>
     // </View>
     <>
-    <StackNavigation/>
+      <View style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
+        <StatusBar backgroundColor="#ffa430" barStyle="light-content"></StatusBar>
+        <View style={styles.head}>
+          <MaterialCommunityIcons name="account" size={24} color="black" />
+          <Image style={styles.image} source={{ uri: "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png" }} />
+        </View>
+        <StackNavigation />
+      </View>
+
     </>
   );
 };
 
-const style = StyleSheet.create({
-  button: {
-    backgroundColor: "red"
+const styles = StyleSheet.create({
+  head:{
+    flexDirection:"row-reverse",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 0,
+    padding: 10
+
+  },
+  image: {
+    width: 120,
+    height: 50,
+    marginBottom: 0
   }
 })
