@@ -9,29 +9,49 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation();
+  const [passwordConfirm, setConfirmPassword] = useState('');
   const [showPassword, setHidePassword] = useState(false);
+  const [showConfirm, setConfirm] = useState(false);
+  const navigation = useNavigation();
   const [errors, setErrors] = useState([]);
-  
+  const [passwordValid, setPasswordValid] = useState([]);
+  const [passwordMatch, setPasswordMatch] = useState('');
+
   const passwordValidation = (inputText) => {
     const validationError = []
     if (inputText.length < 8) {
       validationError.push("Password must be at least 8 characters")
+      setPasswordValid('');
     }
+
     setErrors(validationError);
-    return validationError.length === 0;
+    setPasswordValid(validationError.length === 0 ? 'password good' : '')
+    return validationError;
   }
 
-  const handlePasswordChange = (inputText) =>{
-    setPassword(inputText)
-    passwordValidation(inputText)
+  const handlePasswordChange = (inputText, text = false) => {
+    if (text) {
+      setConfirmPassword(inputText)
+    }
+    else {
+      setPassword(inputText)
+      passwordValidation(inputText)
+    }
   }
-  
-  const handleSubmit = () =>{
-    if(passwordValidation(password)){
+  // Validate password match on every render
+  React.useEffect(() => {
+    if (password && passwordConfirm) {
+      setPasswordMatch(password === passwordConfirm ? 'Password match' : 'Password does not match');
+    } else {
+      setPasswordMatch('');
+    }
+  }, [password, passwordConfirm]);
+
+  const handleSubmit = () => {
+    if (passwordValidation(password)) {
       alert('Password is valid');
     }
-    else{
+    else {
       alert('Please correct the errors in the form.');
     }
   }
@@ -62,22 +82,48 @@ const RegisterScreen = () => {
             />
           </View>
         </View>
-        <View style={styles.bodyRegister}>
-          <View style={styles.areaStyle}>
-            <MaterialCommunityIcons size={22} name={showPassword ? 'eye' : 'eye-off'}
-              onPress={() => setHidePassword(!showPassword)}
-            />
-            <TextInput
-              value={password}
-              onChangeText={handlePasswordChange}
-              secureTextEntry={!showPassword}
-              style={{ fontSize: email ? 15 : 15, width: 250 }}
-              placeholder='Enter your password'
-            />
+        <View>
+          <View style={styles.bodyRegister}>
+            <View style={styles.areaStyle}>
+              <MaterialCommunityIcons size={22} name={showPassword ? 'eye' : 'eye-off'}
+                onPress={() => setHidePassword(!showPassword)}
+              />
+              <TextInput
+                value={password}
+                onChangeText={(text) => handlePasswordChange(text)}
+                secureTextEntry={!showPassword}
+                style={{ fontSize: email ? 15 : 15, width: 250 }}
+                placeholder='Enter your password'
+              />
+            </View>
+            {errors.length > 0 && errors.map((error, index) => (
+              <Text key={index} style={{ color: 'red' }}>{error}</Text>
+            ))}
+            {passwordValid.length > 0 ?
+              (<Text style={{ color: 'green' }}>{passwordValid}</Text>) : ''
+            }
           </View>
-          {errors.length > 0 && errors.map((error,index) => (
-            <Text key={index} style={{ color: 'red' }}>{error}</Text>
-          ))}
+          <View style={styles.bodyRegister}>
+            <View style={styles.areaStyle}>
+              <MaterialCommunityIcons size={22} name={showConfirm ? 'eye' : 'eye-off'}
+                onPress={() => setConfirm(!showConfirm)}
+              />
+              <TextInput
+                value={passwordConfirm}
+                onChangeText={(text) => handlePasswordChange(text, true)}
+                secureTextEntry={!showConfirm}
+                style={{ fontSize: email ? 15 : 15, width: 250 }}
+                placeholder='Enter your password'
+              />
+            </View>
+            {errors.length > 0 && errors.map((error, index) => (
+              <Text key={index} style={{ color: 'red' }}>{error}</Text>
+            ))}
+            {passwordValid.length > 0 ?
+              (<Text style={{ color: 'green' }}>{passwordValid}</Text>) : ''
+            }
+            {passwordMatch.length > 0}<Text>{passwordMatch}</Text>
+          </View>
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 4 }}>
             <Text>Keep me logged in</Text>
             <Text style={styles.forget}>Forget password</Text>

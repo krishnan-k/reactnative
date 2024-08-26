@@ -9,10 +9,11 @@ const LoginScreen = () => {
     const navigation = useNavigation();
     const [showPassword, setShowPassword] = useState(false);
     const [passwordValid, setPasswordValid] = useState([]);
+    const [error,setErrors] = useState([]);
     const passwordToggle = () => {
         setShowPassword(!showPassword)
     }
-    const [error,setErrors] = useState([]);
+    
     const passwordValidation = (inputText) =>{
         const validationError = [];
         if(inputText.length < 8){
