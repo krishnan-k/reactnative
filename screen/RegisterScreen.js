@@ -4,11 +4,37 @@ import { useNavigation } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const [showPassword, setHidePassword] = useState(false);
+  const [errors, setErrors] = useState([]);
+  
+  const passwordValidation = (inputText) => {
+    const validationError = []
+    if (inputText.length < 8) {
+      validationError.push("Password must be at least 8 characters")
+    }
+    setErrors(validationError);
+    return validationError.length === 0;
+  }
+
+  const handlePasswordChange = (inputText) =>{
+    setPassword(inputText)
+    passwordValidation(inputText)
+  }
+  
+  const handleSubmit = () =>{
+    if(passwordValidation(password)){
+      alert('Password is valid');
+    }
+    else{
+      alert('Please correct the errors in the form.');
+    }
+  }
   return (
     <View style={styles.body}>
       <View style={{ alignItems: "center" }}>
@@ -23,8 +49,8 @@ const RegisterScreen = () => {
         <View style={styles.bodyArea}>
           <View style={styles.areaStyle}>
             <FontAwesome name="user" size={24} color="black" />
-            <TextInput  style={{ fontSize: email ? 15 : 15, width: 250 }}
-              placeholder='enter your name'
+            <TextInput style={{ fontSize: email ? 15 : 15, width: 250 }}
+              placeholder='Enter your name'
             />
           </View>
         </View>
@@ -32,28 +58,37 @@ const RegisterScreen = () => {
           <View style={styles.areaStyle}>
             <MaterialIcons name="email" size={22} color="#3b3535" />
             <TextInput style={{ fontSize: email ? 15 : 15, width: 250 }}
-              placeholder='enter your email'
+              placeholder='Enter your email'
             />
           </View>
         </View>
         <View style={styles.bodyRegister}>
           <View style={styles.areaStyle}>
-            <AntDesign name="eye" size={22} color="#3b3535" />
-            <TextInput style={{ fontSize: email ? 15 : 15, width: 250 }}
-              placeholder='enter your password'
+            <MaterialCommunityIcons size={22} name={showPassword ? 'eye' : 'eye-off'}
+              onPress={() => setHidePassword(!showPassword)}
+            />
+            <TextInput
+              value={password}
+              onChangeText={handlePasswordChange}
+              secureTextEntry={!showPassword}
+              style={{ fontSize: email ? 15 : 15, width: 250 }}
+              placeholder='Enter your password'
             />
           </View>
+          {errors.length > 0 && errors.map((error,index) => (
+            <Text key={index} style={{ color: 'red' }}>{error}</Text>
+          ))}
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 4 }}>
-            <Text>keep me logged in</Text>
-            <Text style={styles.forget}>forget password</Text>
+            <Text>Keep me logged in</Text>
+            <Text style={styles.forget}>Forget password</Text>
           </View>
-          <Pressable style={styles.button}>
+          <Pressable style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Login</Text>
           </Pressable>
           <View style={styles.buttonRegister}>
             <Text>Already have an accout?</Text>
             <Pressable style={styles.registerButton} onPress={() => navigation.navigate("Login")}>
-              <Text>Sign in</Text>
+              <Text> Sign in</Text>
             </Pressable>
           </View>
 

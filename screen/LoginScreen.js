@@ -1,12 +1,43 @@
 import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
+    const [showPassword, setShowPassword] = useState(false);
+    const [passwordValid, setPasswordValid] = useState([]);
+    const passwordToggle = () => {
+        setShowPassword(!showPassword)
+    }
+    const [error,setErrors] = useState([]);
+    const passwordValidation = (inputText) =>{
+        const validationError = [];
+        if(inputText.length < 8){
+            validationError.push('Password must be at least 8 characters long.');
+            setPasswordValid('');
+        }
+        else {
+            setPasswordValid('Password is good');
+        }
+        setErrors(validationError);
+        return validationError.length === 0;
+    }
+    
+    const handlePasswordChange = (inputText) =>{
+        setPassword(inputText);
+        passwordValidation(inputText)
+    }
+    const handleSubmit = () =>{
+        if(passwordValidation(password)){
+            alert('Password is valid');
+        }
+        else{
+            alert('Please correct the errors in the form.');
+        }
+    }
     return (
         <View style={styles.body}>
             <View style={{ alignItems: "center" }}>
@@ -21,32 +52,44 @@ const LoginScreen = () => {
                 <View style={styles.bodyArea}>
                     <View style={styles.areaStyle}>
                         <MaterialIcons name="email" size={22} color="#3b3535" />
-                        <TextInput value={email} style={{ fontSize: email ? 15 : 15, width: 250 }}
-                            placeholder='enter your email'
+                        <TextInput style={{ fontSize: email ? 15 : 15, width: 250 }}
+                            placeholder='Enter your email'
                         />
                     </View>
                 </View>
                 <View style={styles.ps}>
                     <View style={styles.areaStyle}>
-                        <AntDesign name="eye" size={22} color="#3b3535" />
-                        <TextInput style={{ fontSize: password ? 15 : 15, width: 250 }}
-                            placeholder='enter your password'
+                        <MaterialCommunityIcons size={22} name={showPassword ? 'eye' : 'eye-off'}
+                            onPress={passwordToggle}
+                        />
+                        <TextInput value={password}
+                            secureTextEntry={!showPassword}
+                            onChangeText={handlePasswordChange}
+                            style={{ fontSize: password ? 15 : 15, width: 250 }}
+                            placeholder='Enter your password'
+                            validatePassword
                         />
                     </View>
                 </View>
+                {error.map((error, index) =>(
+                    <Text key={index} style={{ color: 'red' }}>{error}</Text>
+                ))}
+                <Text style={{ color: 'green' }}>{passwordValid}</Text>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 4 }}>
-                    <Text>keep me logged in</Text>
-                    <Text style={styles.forget}>forget password</Text>
+                    <Text>Keep me logged in</Text>
+                    <Text style={styles.forget}>Forget password</Text>
                 </View>
 
-                <Pressable style={styles.button}>
+                <Pressable style={styles.button}
+                onPress={handleSubmit}
+                >
                     <Text style={styles.buttonText}>Login</Text>
                 </Pressable>
 
                 <View style={styles.buttonRegister}>
                     <Text>Don't have an account?</Text>
                     <Pressable style={styles.registerButton} onPress={() => navigation.navigate("Register")}>
-                        <Text>Sign Up</Text>
+                        <Text> Sign Up</Text>
                     </Pressable>
                 </View>
 
